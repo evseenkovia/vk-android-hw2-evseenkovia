@@ -1,0 +1,23 @@
+package com.evseenkovia.vk_android_hw2_evseenkovia.data
+
+import com.evseenkovia.vk_android_hw2_evseenkovia.model.GiphyResponse
+import retrofit2.http.GET
+import retrofit2.http.Query
+
+interface GiphyApiService {
+
+    @GET("v1/gifs/trending")
+    suspend fun getTrendingGifs(
+        @Query("api_key") apiKey: String,
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int
+    ): GiphyResponse
+
+    @GET("v1/gifs/search")
+    suspend fun searchGifs(
+        @Query("api_key") apiKey: String,
+        @Query("q") query: String,
+        @Query("limit") limit: Int,
+        @Query("offset") offset: Int
+    ): GiphyResponse
+}
