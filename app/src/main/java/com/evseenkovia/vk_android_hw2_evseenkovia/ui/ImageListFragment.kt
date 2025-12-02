@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Button
@@ -48,8 +47,17 @@ import com.evseenkovia.vk_android_hw2_evseenkovia.data.local.DatabaseProvider
 import com.evseenkovia.vk_android_hw2_evseenkovia.data.repository.ImageRepositoryImpl
 import com.evseenkovia.vk_android_hw2_evseenkovia.domain.ImageListViewModel
 import com.evseenkovia.vk_android_hw2_evseenkovia.ui.component.ImageItemCard
+import com.evseenkovia.vk_android_hw2_evseenkovia.ui.component.SingleImageFragment
 
 class ImageListFragment : Fragment() {
+
+    companion object {
+        @JvmStatic
+        fun newInstance() =
+            ImageListFragment().apply {
+                arguments = Bundle().apply {}
+            }
+    }
 
     private val viewModel: ImageListViewModel by viewModels {
         object : ViewModelProvider.Factory {
@@ -94,7 +102,11 @@ class ImageListFragment : Fragment() {
                     onRetry = { viewModel.retry() },
                     onLoadNext = { viewModel.loadMore() },
                     onImageClick = { index, item ->
-                        viewModel.onImageClick(item)
+                        // открыть отдельно картинку
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container,
+                                SingleImageFragment.newInstance(item.url))
+                            .commit()
                         context.showImageNotification(index + 1, item.id)
                     }
                 )
@@ -172,9 +184,10 @@ fun ContentState(
             .fillMaxSize()
             .padding(8.dp)
     ) {
-        val uniqueItems = items.distinctBy { it.uuid }
-        // Используем itemsIndexed, чтобы получить индекс
-        itemsIndexed(uniqueItems, key = { _, item -> item.uuid }) { index, item ->
+        itemsIndexed(
+            items,
+            key = { _, item -> item.uuid }
+        ) { index, item ->
             ImageItemCard(
                 item = item,
                 onClick = { onImageClick(index, item) },
@@ -229,7 +242,9 @@ fun ErrorState(onRetry: () -> Unit) {
 @Composable
 fun PaginationLoader(){
     Box(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         contentAlignment = Alignment.Center
     ){
         CircularProgressIndicator()

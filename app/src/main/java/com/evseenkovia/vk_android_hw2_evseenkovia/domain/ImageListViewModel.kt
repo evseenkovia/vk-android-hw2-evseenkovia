@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.evseenkovia.vk_android_hw2_evseenkovia.data.repository.ImageRepositoryImpl
 import com.evseenkovia.vk_android_hw2_evseenkovia.ui.ImageListUiState
-import com.evseenkovia.vk_android_hw2_evseenkovia.ui.ImageUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -86,10 +85,6 @@ class ImageListViewModel(
                 _state.value = ImageListUiState.Error()
             }
         }
-    }
-
-    fun onImageClick(item: ImageUi) {
-        // TODO: реализация уведомления/навигации
     }
 }
 

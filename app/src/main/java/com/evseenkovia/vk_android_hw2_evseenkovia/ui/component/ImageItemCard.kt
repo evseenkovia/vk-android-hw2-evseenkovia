@@ -15,13 +15,17 @@ import com.evseenkovia.vk_android_hw2_evseenkovia.ui.ImageUi
 
 
 @Composable
-fun ImageItemCard(item: ImageUi, onClick: () -> Unit, modifier: Modifier) {
+fun ImageItemCard(
+    item: ImageUi, onClick: () -> Unit,
+    modifier: Modifier,
+    contentScale: ContentScale = ContentScale.Crop
+) {
     val loader = rememberGifImageLoader()
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = { onClick })
+            .clickable { onClick() }
     ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
@@ -31,7 +35,7 @@ fun ImageItemCard(item: ImageUi, onClick: () -> Unit, modifier: Modifier) {
             imageLoader = loader,
             contentDescription = stringResource(R.string.image_content_desciption),
             modifier = Modifier.fillMaxWidth(),
-            contentScale = ContentScale.Crop
+            contentScale = contentScale
         )
     }
 }

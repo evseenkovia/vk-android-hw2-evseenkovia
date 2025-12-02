@@ -8,6 +8,7 @@ import com.evseenkovia.vk_android_hw2_evseenkovia.data.local.ImageEntity
 import com.evseenkovia.vk_android_hw2_evseenkovia.domain.ImageRepository
 import com.evseenkovia.vk_android_hw2_evseenkovia.ui.ImageUi
 import java.util.UUID
+import kotlin.uuid.Uuid
 
 class ImageRepositoryImpl(
     private val dao: ImageDao,
@@ -25,7 +26,7 @@ class ImageRepositoryImpl(
 
             // Преобразуем в ImageEntity
             val entities = response.data.map { gif ->
-                val uuid = UUID.nameUUIDFromBytes(gif.id.toByteArray()).toString()
+                val uuid = UUID.randomUUID().toString()
                 ImageEntity(
                     uuid = uuid,
                     id = gif.id,
