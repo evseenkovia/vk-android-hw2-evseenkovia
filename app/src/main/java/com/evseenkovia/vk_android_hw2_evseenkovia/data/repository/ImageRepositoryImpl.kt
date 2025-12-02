@@ -1,6 +1,5 @@
 package com.evseenkovia.vk_android_hw2_evseenkovia.data.repository
 
-import android.util.Log
 import androidx.compose.ui.unit.dp
 import com.evseenkovia.vk_android_hw2_evseenkovia.data.GiphyApiService
 import com.evseenkovia.vk_android_hw2_evseenkovia.data.RetrofitInstance
@@ -36,7 +35,6 @@ class ImageRepositoryImpl(
 
             // Сохраняем в Room
             dao.insertAll(entities)
-            entities.forEach { Log.d("GIF", "Saved: ${it.id}") } // <- тег "GIF"
 
             // Преобразуем в UI модель
             val uiItems = entities.map { it.toUi() }
@@ -45,7 +43,6 @@ class ImageRepositoryImpl(
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e("GIF", "Network error, fallback to Room", e) // <- тег "GIF"
 
             // Фоллбек на Room
             val cached = dao.getAll()
@@ -58,7 +55,6 @@ class ImageRepositoryImpl(
 
     suspend fun fetchAllFromLocal(): List<ImageUi> {
         val cached = dao.getAll().map { it.toUi() }
-        Log.d("GIF", "Fetched from local: ${cached.size}") // <- тег "GIF"
         return cached
     }
 
@@ -76,6 +72,5 @@ class ImageRepositoryImpl(
     // Очистка кэша
     suspend fun clearCache() {
         dao.clear()
-        Log.d("GIF", "Cache cleared") // <- тег "GIF"
     }
 }
