@@ -94,7 +94,7 @@ class ImageListFragment : Fragment() {
                     onRetry = { viewModel.retry() },
                     onLoadNext = { viewModel.loadMore() },
                     onImageClick = { index, item ->
-                        viewModel.onImageClick(item) // твоя логика ViewModel
+                        viewModel.onImageClick(item)
                         context.showImageNotification(index + 1, item.id)
                     }
                 )
