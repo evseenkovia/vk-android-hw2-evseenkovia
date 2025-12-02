@@ -15,7 +15,7 @@ import com.evseenkovia.vk_android_hw2_evseenkovia.ui.ImageUi
 
 
 @Composable
-fun ImageItemCard(item: ImageUi, onClick: () -> Unit) {
+fun ImageItemCard(item: ImageUi, onClick: () -> Unit, modifier: Modifier) {
     val loader = rememberGifImageLoader()
 
     Card(

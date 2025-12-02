@@ -2,6 +2,11 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    id("com.google.devtools.ksp") version "2.0.21-1.0.27"
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 android {
@@ -28,9 +33,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
@@ -52,8 +54,11 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.8.9")
 
     // Coil
-    implementation(libs.coil.compose)
-    implementation(libs.coil.network.okhttp)
+        // Core
+        implementation("io.coil-kt:coil:2.2.2")
+        // Compose
+        implementation("io.coil-kt:coil-compose:2.2.2")
+
     implementation(libs.androidx.fragment)
 
     // Retrofit
@@ -63,5 +68,11 @@ dependencies {
     // Coil для загрузки изображений / GIF
     implementation(libs.coil.kt.coil.compose)
     implementation(libs.coil.gif)
+
+    // Room для кэширования
+    val room_version = "2.8.4"
+    implementation("androidx.room:room-runtime:${room_version}")
+    ksp("androidx.room:room-compiler:$room_version")
+
 
 }

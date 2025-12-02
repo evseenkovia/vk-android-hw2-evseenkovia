@@ -2,6 +2,7 @@ package com.evseenkovia.vk_android_hw2_evseenkovia.domain
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.evseenkovia.vk_android_hw2_evseenkovia.data.repository.ImageRepositoryImpl
 import com.evseenkovia.vk_android_hw2_evseenkovia.ui.ImageListUiState
 import com.evseenkovia.vk_android_hw2_evseenkovia.ui.ImageUi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ImageListViewModel(
-    private val repository: ImageRepository
+    val repository: ImageRepositoryImpl
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<ImageListUiState>(ImageListUiState.Loading)
@@ -29,7 +30,7 @@ class ImageListViewModel(
             _state.value = ImageListUiState.Loading
             isLoading = true
 
-            val result = repository.loadPage(0, pageSize)
+            val result = repository.loadImages(pageSize, 0)
             isLoading = false
 
             result.onSuccess { items ->
@@ -50,15 +51,13 @@ class ImageListViewModel(
 
     fun loadMore() {
         val currentState = _state.value
-        if (currentState !is ImageListUiState.Content) return
-        if (isLoading) return
+        if (currentState !is ImageListUiState.Content || isLoading) return
 
         viewModelScope.launch {
             isLoading = true
-
             _state.value = currentState.copy(isPaginationLoading = true)
 
-            val result = repository.loadPage(currentPage, pageSize)
+            val result = repository.loadImages(pageSize, currentPage * pageSize)
             isLoading = false
 
             result.onSuccess { newItems ->
@@ -68,13 +67,29 @@ class ImageListViewModel(
                     isPaginationLoading = false
                 )
             }.onFailure {
-                // На пагинации ошибки просто скрываем лоадер
+                // при ошибке на пагинации просто скрываем лоадер
                 _state.value = currentState.copy(isPaginationLoading = false)
             }
         }
     }
 
+    fun loadFromCache() {
+        viewModelScope.launch {
+            _state.value = ImageListUiState.Loading
+            val cachedItems = repository.fetchAllFromLocal()
+            if (cachedItems.isNotEmpty()) {
+                _state.value = ImageListUiState.Content(
+                    items = cachedItems,
+                    isPaginationLoading = false
+                )
+            } else {
+                _state.value = ImageListUiState.Error()
+            }
+        }
+    }
+
     fun onImageClick(item: ImageUi) {
-        // уведомление будет реализовано позже
+        // TODO: реализация уведомления/навигации
     }
 }
+
